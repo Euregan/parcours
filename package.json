@@ -12,9 +12,11 @@
   "dependencies": {
     "@react-three/drei": "^9.88.3",
     "@react-three/fiber": "^8.14.5",
+    "@types/d3": "^7.4.1",
     "@types/three": "^0.157.0",
     "@vanilla-extract/css": "^1.13.0",
     "@vanilla-extract/dynamic": "^2.0.3",
+    "d3": "^7.8.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "three": "^0.157.0"
