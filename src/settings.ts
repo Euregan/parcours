@@ -7,10 +7,14 @@ const settings = {
     },
     compass: {
       line: "#8fb1b4",
+      text: "#fcfcfd",
     },
   },
   offsets: {
     levels: 2,
+  },
+  sizes: {
+    compass: 70,
   },
 };
 
