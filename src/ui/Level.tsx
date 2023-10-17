@@ -14,7 +14,7 @@ const Level = ({ points, height }: LevelProps) => {
     <group position={[0, height, 0]}>
       <CatmullRomLine
         lineWidth={3}
-        color={settings.level.line}
+        color={settings.colors.level.line}
         points={points.map((point) => [point.x, 0, point.y])}
         closed
         // The type is wrong, segments exists, and is used to smooth the line curve
@@ -30,7 +30,10 @@ const Level = ({ points, height }: LevelProps) => {
         // Here, we cheat: We offset it slightly toward the bottom to properly display the outline
         position={[0, -0.05, 0]}
       >
-        <meshBasicMaterial color={settings.level.floor} side={BackSide} />
+        <meshBasicMaterial
+          color={settings.colors.level.floor}
+          side={BackSide}
+        />
       </Shape>
     </group>
   );

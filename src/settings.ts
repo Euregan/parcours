@@ -1,11 +1,16 @@
 const settings = {
-  background: "#1c1c1e",
-  level: {
-    floor: "#222223",
-    line: "#66676c",
+  colors: {
+    background: "#1c1c1e",
+    level: {
+      floor: "#222223",
+      line: "#66676c",
+    },
+    compass: {
+      line: "#8fb1b4",
+    },
   },
-  compass: {
-    line: "#8fb1b4",
+  offsets: {
+    levels: 2,
   },
 };
 

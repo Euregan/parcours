@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { contours } from "d3";
 import Level from "./Level";
+import settings from "../settings";
 
 type TerrainProps = {
   heightmap: string;
@@ -90,7 +91,11 @@ const Terrain = ({ heightmap, size }: TerrainProps) => {
   return terrain
     .filter((points) => points.length > 0)
     .flatMap((points, index) => (
-      <Level key={index} points={points} height={index * 0.7} />
+      <Level
+        key={index}
+        points={points}
+        height={index * 0.7 - settings.offsets.levels}
+      />
     ));
 };
 

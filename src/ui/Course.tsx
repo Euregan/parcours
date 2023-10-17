@@ -17,10 +17,10 @@ const Course = ({ heightmap }: CourseProps) => (
       // We remove the default tone mapping to fully control the colors
       gl.toneMapping = NoToneMapping;
     }}
-    camera={{ fov: 50, position: [-75, 60, -75] }}
+    camera={{ fov: 50, position: [75, 60, 75] }}
   >
     <OrbitControls enablePan={false} enableZoom={false} />
-    <color attach="background" args={[settings.background]} />
+    <color attach="background" args={[settings.colors.background]} />
 
     <Compass />
     <Terrain heightmap={heightmap} size={size} />
