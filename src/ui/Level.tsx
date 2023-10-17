@@ -1,5 +1,6 @@
 import { CatmullRomLine, Shape } from "@react-three/drei";
 import { Vector2, BackSide, Shape as BaseShape } from "three";
+import settings from "../settings";
 
 type Point = { x: number; y: number };
 
@@ -13,7 +14,7 @@ const Level = ({ points, height }: LevelProps) => {
     <group position={[0, height, 0]}>
       <CatmullRomLine
         lineWidth={3}
-        color="#66676c"
+        color={settings.level.line}
         points={points.map((point) => [point.x, 0, point.y])}
         closed
         // The type is wrong, segments exists, and is used to smooth the line curve
@@ -29,7 +30,7 @@ const Level = ({ points, height }: LevelProps) => {
         // Here, we cheat: We offset it slightly toward the bottom to properly display the outline
         position={[0, -0.05, 0]}
       >
-        <meshBasicMaterial color="#1c1c1e" side={BackSide} />
+        <meshBasicMaterial color={settings.level.floor} side={BackSide} />
       </Shape>
     </group>
   );

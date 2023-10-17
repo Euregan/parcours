@@ -3,6 +3,7 @@ import { Canvas } from "@react-three/fiber";
 import { NoToneMapping } from "three";
 import Terrain from "./Terrain";
 import Compass from "./Compass";
+import settings from "../settings";
 
 type CourseProps = {
   heightmap: string;
@@ -19,7 +20,7 @@ const Course = ({ heightmap }: CourseProps) => (
     camera={{ fov: 50, position: [-75, 60, -75] }}
   >
     <OrbitControls enablePan={false} enableZoom={false} />
-    <color attach="background" args={["#1c1c1e"]} />
+    <color attach="background" args={[settings.background]} />
 
     <Compass />
     <Terrain heightmap={heightmap} size={size} />
