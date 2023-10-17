@@ -29,7 +29,7 @@ const Level = ({ points, height }: LevelProps) => {
         // Here, we cheat: We offset it slightly toward the bottom to properly display the outline
         position={[0, -0.05, 0]}
       >
-        <meshBasicMaterial color="#242424" side={BackSide} />
+        <meshBasicMaterial color="#1c1c1e" side={BackSide} />
       </Shape>
     </group>
   );

@@ -1,6 +1,6 @@
 import { createTheme, globalStyle } from "@vanilla-extract/css";
 
-const background = "#242424";
+const background = "#1c1c1e";
 
 globalStyle("body, #root, main", {
   all: "unset",

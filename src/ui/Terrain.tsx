@@ -10,7 +10,7 @@ type TerrainProps = {
 type Point = { x: number; y: number; height: number };
 
 const gridSize = 100;
-const levelCount = 25;
+const levelCount = 30;
 
 const Terrain = ({ heightmap, size }: TerrainProps) => {
   const [terrain, setTerrain] = useState<Array<Array<Point>>>([]);
@@ -90,7 +90,7 @@ const Terrain = ({ heightmap, size }: TerrainProps) => {
   return terrain
     .filter((points) => points.length > 0)
     .flatMap((points, index) => (
-      <Level key={index} points={points} height={index / 2} />
+      <Level key={index} points={points} height={index * 0.7} />
     ));
 };
 
