@@ -8,6 +8,7 @@ type TerrainProps = {
 type Point = { x: number; y: number; height: number };
 
 const gridSize = 50;
+const levelCount = 25;
 
 const heightToColor = (height: number) => {
   const color = Math.floor(0xff * height)
@@ -17,8 +18,101 @@ const heightToColor = (height: number) => {
   return `#${color}${color}${color}`;
 };
 
+const isEdge = (
+  x: number,
+  y: number,
+  minHeight: number,
+  points: Array<Point>
+) =>
+  x === 0 ||
+  y === 0 ||
+  x === gridSize - 1 ||
+  y === gridSize - 1 ||
+  (x > 1 &&
+    points.find((point) => point.x === x - 1 && point.y === y)!.height <
+      minHeight) ||
+  (x < gridSize - 2 &&
+    points.find((point) => point.x === x + 1 && point.y === y)!.height <
+      minHeight) ||
+  (y > 1 &&
+    points.find((point) => point.x === x && point.y === y - 1)!.height <
+      minHeight) ||
+  (y < gridSize - 2 &&
+    points.find((point) => point.x === x && point.y === y + 1)!.height <
+      minHeight);
+
+const contour = (
+  points: Array<Point>,
+  minHeight: number,
+  x: number = 0,
+  y: number = 0,
+  selectedPoints: Array<Point> = [],
+  alreadyVisited: Array<Point> = []
+): [Array<Point>, Array<Point>] => {
+  // If coordinates are out of bound, we stop
+  if (x < 0 || y < 0 || x >= gridSize || y >= gridSize) {
+    return [selectedPoints, alreadyVisited];
+  }
+
+  // If the current pixel has already been visited, we stop
+  if (alreadyVisited.some((point) => point.x === x && point.y === y)) {
+    return [selectedPoints, alreadyVisited];
+  }
+
+  const point = points.find((point) => point.x === x && point.y === y)!;
+  let updatedVisited = alreadyVisited.concat([point]);
+
+  // If the point is too low, we stop
+  if (point.height < minHeight) {
+    return [selectedPoints, updatedVisited];
+  }
+
+  let result = selectedPoints;
+
+  // We only select the point if it's on the edge of the shape or of the picture
+  if (isEdge(x, y, minHeight, points)) {
+    result.push(point);
+  }
+
+  // Lookup in all four directions
+  [result, updatedVisited] = contour(
+    points,
+    minHeight,
+    x - 1,
+    y,
+    result,
+    updatedVisited
+  );
+  [result, updatedVisited] = contour(
+    points,
+    minHeight,
+    x + 1,
+    y,
+    result,
+    updatedVisited
+  );
+  [result, updatedVisited] = contour(
+    points,
+    minHeight,
+    x,
+    y - 1,
+    result,
+    updatedVisited
+  );
+  [result, updatedVisited] = contour(
+    points,
+    minHeight,
+    x,
+    y + 1,
+    result,
+    updatedVisited
+  );
+
+  return [result, updatedVisited];
+};
+
 const Terrain = ({ heightmap, size }: TerrainProps) => {
-  const [terrain, setTerrain] = useState<Array<Point>>([]);
+  const [terrain, setTerrain] = useState<Array<Array<Point>>>([]);
 
   useEffect(() => {
     const canvas = document.createElement("canvas");
@@ -40,58 +134,56 @@ const Terrain = ({ heightmap, size }: TerrainProps) => {
         gridSize
       );
 
-      const map = context.getImageData(0, 0, canvas.width, canvas.height).data;
+      const map = context.getImageData(0, 0, gridSize, gridSize).data;
 
-      const points: Array<Point> = [];
+      let points: Array<Point> = [];
       let highest = 0;
       let lowest = 255;
-
       for (let y = 0; y < gridSize; y++) {
         for (let x = 0; x < gridSize; x++) {
-          const height = map[y * (canvas.width * 4) + x * 4];
+          const height = map[y * (gridSize * 4) + x * 4];
 
           points.push({
-            x: x * (size / gridSize),
-            y: y * (size / gridSize),
+            x: x,
+            y: y,
             height,
           });
-
-          if (x * (size / gridSize) === 46 && y * (size / gridSize) === 26) {
-            console.log(
-              height,
-              height / 76,
-              Math.floor(0xff * (height / 76)).toString(16),
-              `#${Math.floor(0xff * (height / 76)).toString(16)}${Math.floor(
-                0xff * (height / 76)
-              ).toString(16)}${Math.floor(0xff * (height / 76)).toString(16)}`
-            );
-          }
 
           lowest = height < lowest ? height : lowest;
           highest = height > highest ? height : highest;
         }
       }
 
-      setTerrain(
-        points.map((point) => ({
-          ...point,
-          // We normalize the height so the lowest is 0 and the highest is 1
-          height: (point.height - lowest) / highest,
-        }))
-      );
+      points = points.map((point) => ({
+        ...point,
+        // We normalize the height so the lowest is 0 and the highest is 1
+        height: (point.height - lowest) / highest,
+      }));
+
+      const levels = [];
+      // We skip the first level because it would select every point anyway
+      for (let minHeight = 1; minHeight <= levelCount; minHeight++) {
+        levels.push(
+          contour(points, minHeight / levelCount, gridSize / 2, gridSize / 2)[0]
+        );
+      }
+
+      setTerrain(levels);
     };
     image.src = heightmap;
-  }, [heightmap]);
+  }, [heightmap, size]);
 
-  return terrain.map((point) => (
-    <circle
-      key={`(${point.x},${point.y})`}
-      cx={point.x}
-      cy={point.y}
-      r={0.5}
-      fill={heightToColor(point.height)}
-    />
-  ));
+  return terrain.flatMap((points) =>
+    points.map((point) => (
+      <circle
+        key={`(${point.x},${point.y})`}
+        cx={point.x * (size / gridSize)}
+        cy={point.y * (size / gridSize)}
+        r={0.5}
+        fill={heightToColor(point.height)}
+      />
+    ))
+  );
 };
 
 export default Terrain;
