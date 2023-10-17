@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { QuadraticBezierLine } from "@react-three/drei";
+import { CatmullRomLine, QuadraticBezierLine } from "@react-three/drei";
 
 type TerrainProps = {
   heightmap: string;
@@ -246,6 +246,22 @@ const Terrain = ({ heightmap, size }: TerrainProps) => {
     };
     image.src = heightmap;
   }, [heightmap, size]);
+
+  return terrain
+    .filter((points) => points.length > 0)
+    .flatMap((points, height) => (
+      <CatmullRomLine
+        key={height}
+        lineWidth={3}
+        color="#66676c"
+        points={points.map((point) => [point.x, height / 2, point.y])}
+        closed
+        // The type is wrong, segments exists, and is used to smooth the line curve
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        segments={points.length * 8}
+      />
+    ));
 
   return terrain.flatMap((points, height) =>
     points.map((point, index) => (
