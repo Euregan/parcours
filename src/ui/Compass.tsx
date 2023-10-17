@@ -5,6 +5,7 @@ import {
   Shape as BaseShape,
   EllipseCurve,
   Path,
+  LineCurve,
 } from "three";
 import settings from "../settings";
 import font from "../fira.json";
@@ -32,7 +33,6 @@ const Compass = () => {
   return (
     <group position={[0, 0, 0]}>
       <Line
-        worldUnits
         points={new EllipseCurve(
           0,
           0,
@@ -41,6 +41,41 @@ const Compass = () => {
         ).getPoints(100)}
         color={settings.colors.compass.line}
         lineWidth={0.3}
+        rotation={[Math.PI * 0.5, 0, 0]}
+      />
+
+      <Line
+        points={[
+          new Vector2(
+            Math.cos(Math.PI * 0.25) * (settings.sizes.compass / 2 + margin),
+            Math.sin(Math.PI * 0.25) * (settings.sizes.compass / 2 + margin)
+          ),
+          new Vector2(
+            Math.cos(Math.PI * 0.25) *
+              (settings.sizes.compass / 2 + margin + 3),
+            Math.sin(Math.PI * 0.25) * (settings.sizes.compass / 2 + margin + 3)
+          ),
+        ]}
+        // color={settings.colors.compass.line}
+        color="red"
+        lineWidth={1}
+        rotation={[Math.PI * 0.5, 0, 0]}
+      />
+
+      <Line
+        points={[
+          new Vector2(
+            Math.cos(Math.PI * 0.33) * (settings.sizes.compass / 2 + margin),
+            Math.sin(Math.PI * 0.33) * (settings.sizes.compass / 2 + margin)
+          ),
+          new Vector2(
+            Math.cos(Math.PI * 0.33) *
+              (settings.sizes.compass / 2 + margin + 3),
+            Math.sin(Math.PI * 0.33) * (settings.sizes.compass / 2 + margin + 3)
+          ),
+        ]}
+        color="orange"
+        lineWidth={1}
         rotation={[Math.PI * 0.5, 0, 0]}
       />
 
