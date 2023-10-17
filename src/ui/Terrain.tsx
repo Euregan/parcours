@@ -111,8 +111,96 @@ const contour = (
   return [result, updatedVisited];
 };
 
+const order = (contour: Array<Point>, previous = contour[0]): Array<Point> => {
+  if (contour.length <= 1) {
+    return contour;
+  }
+
+  const findNext = (distance: number) => {
+    let next = contour.find(
+      (point) => point.x === previous.x && point.y === previous.y - distance
+    );
+    next =
+      next ||
+      contour.find(
+        (point) =>
+          point.x === previous.x - distance && point.y === previous.y - distance
+      );
+    next =
+      next ||
+      contour.find(
+        (point) => point.x === previous.x - distance && point.y === previous.y
+      );
+    next =
+      next ||
+      contour.find(
+        (point) =>
+          point.x === previous.x - distance && point.y === previous.y + distance
+      );
+    next =
+      next ||
+      contour.find(
+        (point) => point.x === previous.x && point.y === previous.y + distance
+      );
+    next =
+      next ||
+      contour.find(
+        (point) =>
+          point.x === previous.x + distance && point.y === previous.y + distance
+      );
+    next =
+      next ||
+      contour.find(
+        (point) => point.x === previous.x + distance && point.y === previous.y
+      );
+    next =
+      next ||
+      contour.find(
+        (point) =>
+          point.x === previous.x + distance && point.y === previous.y - distance
+      );
+
+    return next;
+  };
+
+  const next = findNext(1) || findNext(2);
+
+  if (!next) {
+    return [];
+  }
+
+  return [
+    previous,
+    ...order(
+      contour.filter(
+        (point) => point.x !== previous.x || point.y !== previous.y
+      ),
+      next
+    ),
+  ];
+};
+
 const Terrain = ({ heightmap, size }: TerrainProps) => {
   const [terrain, setTerrain] = useState<Array<Array<Point>>>([]);
+
+  const path = (contour: Array<Point>) => {
+    const scale = size / gridSize;
+
+    const orderedPoints = order(contour);
+
+    let path = "";
+    for (let i = 0; i < orderedPoints.length; i++) {
+      const point = orderedPoints[i];
+
+      if (i === 0) {
+        path += `M${point.x * scale} ${point.y * scale}`;
+      } else {
+        path += `L${point.x * scale} ${point.y * scale}`;
+      }
+    }
+
+    return `${path} Z`;
+  };
 
   useEffect(() => {
     const canvas = document.createElement("canvas");
@@ -173,17 +261,15 @@ const Terrain = ({ heightmap, size }: TerrainProps) => {
     image.src = heightmap;
   }, [heightmap, size]);
 
-  return terrain.flatMap((points) =>
-    points.map((point) => (
-      <circle
-        key={`(${point.x},${point.y})`}
-        cx={point.x * (size / gridSize)}
-        cy={point.y * (size / gridSize)}
-        r={0.5}
-        fill={heightToColor(point.height)}
-      />
-    ))
-  );
+  return terrain.map((points, index) => (
+    <path
+      key={index}
+      d={path(points)}
+      stroke="white"
+      fill="transparent"
+      strokeWidth={0.3}
+    />
+  ));
 };
 
 export default Terrain;
