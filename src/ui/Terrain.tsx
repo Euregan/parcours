@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import * as style from "./Terrain.css";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
 type TerrainProps = {
   heightmap: string;
@@ -9,14 +11,6 @@ type Point = { x: number; y: number; height: number };
 
 const gridSize = 50;
 const levelCount = 25;
-
-const heightToColor = (height: number) => {
-  const color = Math.floor(0xff * height)
-    .toString(16)
-    .padStart(2, "0");
-
-  return `#${color}${color}${color}`;
-};
 
 const isEdge = (
   x: number,
@@ -195,7 +189,7 @@ const Terrain = ({ heightmap, size }: TerrainProps) => {
       if (i === 0) {
         path += `M${point.x * scale} ${point.y * scale}`;
       } else {
-        path += `L${point.x * scale} ${point.y * scale}`;
+        path += ` L${point.x * scale} ${point.y * scale}`;
       }
     }
 
@@ -264,6 +258,8 @@ const Terrain = ({ heightmap, size }: TerrainProps) => {
   return terrain.map((points, index) => (
     <path
       key={index}
+      style={assignInlineVars({ [style.height]: index.toString(10) })}
+      className={style.path}
       d={path(points)}
       stroke="white"
       fill="transparent"
