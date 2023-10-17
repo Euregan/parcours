@@ -1,4 +1,3 @@
-import "./App.css";
 import Course from "./ui/Course";
 import { themeClass } from "./theme.css";
 import heightmap from "./assets/test-mountain-heightmap.png";
