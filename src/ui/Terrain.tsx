@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import * as style from "./Terrain.css";
-import { assignInlineVars } from "@vanilla-extract/dynamic";
+import { QuadraticBezierLine } from "@react-three/drei";
 
 type TerrainProps = {
   heightmap: string;
@@ -177,25 +176,6 @@ const order = (contour: Array<Point>, previous = contour[0]): Array<Point> => {
 const Terrain = ({ heightmap, size }: TerrainProps) => {
   const [terrain, setTerrain] = useState<Array<Array<Point>>>([]);
 
-  const path = (contour: Array<Point>) => {
-    const scale = size / gridSize;
-
-    const orderedPoints = order(contour);
-
-    let path = "";
-    for (let i = 0; i < orderedPoints.length; i++) {
-      const point = orderedPoints[i];
-
-      if (i === 0) {
-        path += `M${point.x * scale} ${point.y * scale}`;
-      } else {
-        path += ` L${point.x * scale} ${point.y * scale}`;
-      }
-    }
-
-    return `${path} Z`;
-  };
-
   useEffect(() => {
     const canvas = document.createElement("canvas");
     const context = canvas.getContext("2d")!;
@@ -246,7 +226,19 @@ const Terrain = ({ heightmap, size }: TerrainProps) => {
       // We skip the first level because it would select every point anyway
       for (let minHeight = 1; minHeight <= levelCount; minHeight++) {
         levels.push(
-          contour(points, minHeight / levelCount, gridSize / 2, gridSize / 2)[0]
+          order(
+            contour(
+              points,
+              minHeight / levelCount,
+              gridSize / 2,
+              gridSize / 2
+            )[0].map((point) => ({
+              ...point,
+              // We recenter the level around the origin
+              x: point.x - gridSize / 2,
+              y: point.y - gridSize / 2,
+            }))
+          )
         );
       }
 
@@ -255,17 +247,17 @@ const Terrain = ({ heightmap, size }: TerrainProps) => {
     image.src = heightmap;
   }, [heightmap, size]);
 
-  return terrain.map((points, index) => (
-    <path
-      key={index}
-      style={assignInlineVars({ [style.height]: index.toString(10) })}
-      className={style.path}
-      d={path(points)}
-      stroke="white"
-      fill="transparent"
-      strokeWidth={0.3}
-    />
-  ));
+  return terrain.flatMap((points, height) =>
+    points.map((point, index) => (
+      <QuadraticBezierLine
+        key={`(${point.x},${point.y})'`}
+        lineWidth={3}
+        color="#66676c"
+        start={[points.at(index - 1)!.x, height / 2, points.at(index - 1)!.y]}
+        end={[point.x, height / 2, point.y]}
+      />
+    ))
+  );
 };
 
 export default Terrain;

@@ -1,6 +1,7 @@
+import { OrbitControls } from "@react-three/drei";
 import Compass from "./Compass";
 import Terrain from "./Terrain";
-import * as style from "./Course.css";
+import { Canvas } from "@react-three/fiber";
 
 type CourseProps = {
   heightmap: string;
@@ -9,10 +10,13 @@ type CourseProps = {
 const size = 100;
 
 const Course = ({ heightmap }: CourseProps) => (
-  <svg viewBox={`0 0 ${size} ${size}`} className={style.svg}>
+  <Canvas>
+    <OrbitControls />
+    <color attach="background" args={["#242424"]} />
+
     <Compass />
     <Terrain heightmap={heightmap} size={size} />
-  </svg>
+  </Canvas>
 );
 
 export default Course;
