@@ -2,7 +2,7 @@ import { style } from "@vanilla-extract/css";
 import { theme } from "../theme.css";
 
 export const course = style({
-  background: theme.background,
+  background: theme.colors.background,
   width: "1000px",
   height: "1000px",
   borderRadius: "40px",
