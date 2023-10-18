@@ -14,9 +14,13 @@ const gridSize = 100;
 const levelCount = 30;
 
 const Terrain = ({ heightmap, size }: TerrainProps) => {
-  const [terrain, setTerrain] = useState<Array<Array<Point>>>([]);
+  const [terrain, setTerrain] = useState<Array<Array<Array<Point>>> | null>(
+    null
+  );
 
   useEffect(() => {
+    setTerrain(null);
+
     const canvas = document.createElement("canvas");
     const context = canvas.getContext("2d")!;
 
@@ -62,7 +66,7 @@ const Terrain = ({ heightmap, size }: TerrainProps) => {
         height: (point.height - lowest) / highest,
       }));
 
-      const levels: Array<Array<Point>> = [];
+      const levels: Array<Array<Array<Point>>> = [];
       // We skip the first level because it would select every point anyway
       for (let minHeight = 1; minHeight <= levelCount; minHeight++) {
         const level = contours()
@@ -73,12 +77,15 @@ const Terrain = ({ heightmap, size }: TerrainProps) => {
           );
 
         if (level.coordinates[0]) {
+          console.log(level);
           levels.push(
-            level.coordinates[0][0].map((position) => ({
-              height: minHeight,
-              x: position[0] - gridSize / 2,
-              y: position[1] - gridSize / 2,
-            }))
+            level.coordinates.map((level) =>
+              level[0].map((position) => ({
+                height: minHeight,
+                x: position[0] - gridSize / 2,
+                y: position[1] - gridSize / 2,
+              }))
+            )
           );
         }
       }
@@ -88,15 +95,21 @@ const Terrain = ({ heightmap, size }: TerrainProps) => {
     image.src = heightmap;
   }, [heightmap, size]);
 
+  if (!terrain) {
+    return <></>;
+  }
+
   return terrain
     .filter((points) => points.length > 0)
-    .flatMap((points, index) => (
-      <Level
-        key={`${heightmap}-${index}`}
-        points={points}
-        height={index * 0.7 - settings.offsets.levels}
-      />
-    ));
+    .flatMap((levels, levelIndex) =>
+      levels.map((points, pointsIndex) => (
+        <Level
+          key={`${heightmap}-${levelIndex}-${pointsIndex}`}
+          points={points}
+          height={levelIndex * 0.7 - settings.offsets.levels}
+        />
+      ))
+    );
 };
 
 export default Terrain;
