@@ -5,6 +5,7 @@ export const fieldset = style({
   all: "unset",
   background: theme.colors.background,
   display: "flex",
+  gap: "8px",
   borderRadius: "40px",
   padding: "2px",
   border: `1px ${theme.colors.border} solid`,
