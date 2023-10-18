@@ -10,7 +10,9 @@ type TerrainProps = {
 
 type Point = { x: number; y: number; height: number };
 
-const gridSize = 100;
+const gridSize = 500;
+// Dirty hack to make the heightmap fit the Compass
+const scale = 65 / gridSize;
 const levelCount = 30;
 
 const Terrain = ({ heightmap, size }: TerrainProps) => {
@@ -66,6 +68,19 @@ const Terrain = ({ heightmap, size }: TerrainProps) => {
         height: (point.height - lowest) / highest,
       }));
 
+      // We add a mask to the image so the 3D visualization doesn't overflow from the Compass
+      points = points.map((point) => ({
+        ...point,
+        height:
+          Math.sqrt(
+            Math.pow(point.x - gridSize / 2, 2) +
+              Math.pow(point.y - gridSize / 2, 2)
+          ) >
+          gridSize / 2
+            ? 0
+            : point.height,
+      }));
+
       const levels: Array<Array<Array<Point>>> = [];
       // We skip the first level because it would select every point anyway
       for (let minHeight = 1; minHeight <= levelCount; minHeight++) {
@@ -77,13 +92,12 @@ const Terrain = ({ heightmap, size }: TerrainProps) => {
           );
 
         if (level.coordinates[0]) {
-          console.log(level);
           levels.push(
             level.coordinates.map((level) =>
               level[0].map((position) => ({
                 height: minHeight,
-                x: position[0] - gridSize / 2,
-                y: position[1] - gridSize / 2,
+                x: position[0] * scale - gridSize / (2 * (1 / scale)),
+                y: position[1] * scale - gridSize / (2 * (1 / scale)),
               }))
             )
           );
