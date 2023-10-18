@@ -92,7 +92,7 @@ const Terrain = ({ heightmap, size }: TerrainProps) => {
     .filter((points) => points.length > 0)
     .flatMap((points, index) => (
       <Level
-        key={index}
+        key={`${heightmap}-${index}`}
         points={points}
         height={index * 0.7 - settings.offsets.levels}
       />
