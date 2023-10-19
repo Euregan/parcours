@@ -31,14 +31,20 @@ const Compass = () => {
 
   const margin = 1;
   const lines = [];
+  const letterAngle = [90, 180, 270];
+  const specialLine = [30, 60, 120, 150, 210, 240, 300, 330];
 
-  for (let i = 5; i < 88; i += 5) {
+  for (let i = 5; i < 360; i += 5) {
     const angle = (i * Math.PI) / 180;
     let lineColor = settings.colors.compass.line;
     let lineWidth = 0.3;
     let startMargin = 0;
 
-    if (i === 30 || i === 60) {
+    if (letterAngle.includes(i)) {
+      continue;
+    }
+
+    if (specialLine.includes(i)) {
       lineColor = settings.colors.compass.specialLine;
     }
 
@@ -47,7 +53,6 @@ const Compass = () => {
       lineWidth = 0.3;
     }
 
-    // Ajoute une ligne à l'angle actuel
     const startPoint = new Vector2(
       Math.cos(angle) * (settings.sizes.compass / 2 + margin + startMargin),
       Math.sin(angle) * (settings.sizes.compass / 2 + margin + startMargin)
