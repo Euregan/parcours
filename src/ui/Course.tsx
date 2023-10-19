@@ -25,7 +25,7 @@ const Course = ({ heightmap }: CourseProps) => (
       <color attach="background" args={[settings.colors.background]} />
 
       <Compass />
-      {/* <Terrain heightmap={heightmap} size={size} /> */}
+      <Terrain heightmap={heightmap} size={size} />
     </Canvas>
   </section>
 );

@@ -5,10 +5,11 @@ import {
   Shape as BaseShape,
   EllipseCurve,
   Path,
-  LineCurve,
 } from "three";
 import settings from "../settings";
 import font from "../fira.json";
+
+const textSize = 3;
 
 const Compass = () => {
   const mask = new BaseShape([
@@ -31,19 +32,19 @@ const Compass = () => {
   const margin = 1;
   const lines = [];
 
-  for (let i = 0; i < 90; i++) {
+  for (let i = 5; i < 88; i += 5) {
     const angle = (i * Math.PI) / 180;
     let lineColor = settings.colors.compass.line;
-    let lineWidth = 3;
+    let lineWidth = 0.3;
     let startMargin = 0;
 
     if (i === 30 || i === 60) {
       lineColor = settings.colors.compass.specialLine;
     }
 
-    if (Math.abs(i % 2) === 1) {
+    if (Math.abs(i % 10) !== 0) {
       startMargin = 1.5;
-      lineWidth = 3;
+      lineWidth = 0.3;
     }
 
     // Ajoute une ligne à l'angle actuel
@@ -52,8 +53,8 @@ const Compass = () => {
       Math.sin(angle) * (settings.sizes.compass / 2 + margin + startMargin)
     );
     const endPoint = new Vector2(
-      Math.cos(angle) * (settings.sizes.compass / 2 + margin + lineWidth),
-      Math.sin(angle) * (settings.sizes.compass / 2 + margin + lineWidth)
+      Math.cos(angle) * (settings.sizes.compass / 2 + margin + 3),
+      Math.sin(angle) * (settings.sizes.compass / 2 + margin + 3)
     );
 
     lines.push(
@@ -63,6 +64,7 @@ const Compass = () => {
         color={lineColor}
         lineWidth={lineWidth}
         rotation={[Math.PI * 0.5, 0, 0]}
+        worldUnits
       />
     );
   }
@@ -79,6 +81,7 @@ const Compass = () => {
         color={settings.colors.compass.line}
         lineWidth={0.3}
         rotation={[Math.PI * 0.5, 0, 0]}
+        worldUnits
       />
 
       {lines}
@@ -94,36 +97,36 @@ const Compass = () => {
 
       <Text3D
         font={font as unknown as FontData}
-        size={3}
+        size={textSize}
         rotation={[Math.PI * 1.5, 0, Math.PI * 1.5]}
-        position={[settings.sizes.compass / 2 + margin, 0, -1.5]}
+        position={[settings.sizes.compass / 2 + margin, 0, -textSize / 2]}
       >
         N
         <meshBasicMaterial color={settings.colors.compass.text} />
       </Text3D>
       <Text3D
         font={font as unknown as FontData}
-        size={3}
+        size={textSize}
         rotation={[Math.PI * 1.5, 0, Math.PI]}
-        position={[1.5, 0, settings.sizes.compass / 2 + margin]}
+        position={[textSize / 2, 0, settings.sizes.compass / 2 + margin]}
       >
         E
         <meshBasicMaterial color={settings.colors.compass.text} />
       </Text3D>
       <Text3D
         font={font as unknown as FontData}
-        size={3}
+        size={textSize}
         rotation={[Math.PI * 1.5, 0, Math.PI * 0.5]}
-        position={[-settings.sizes.compass / 2 - margin, 0, 1.5]}
+        position={[-settings.sizes.compass / 2 - margin, 0, textSize / 2]}
       >
         S
         <meshBasicMaterial color={settings.colors.compass.text} />
       </Text3D>
       <Text3D
         font={font as unknown as FontData}
-        size={3}
+        size={textSize}
         rotation={[Math.PI * 1.5, 0, Math.PI * 2]}
-        position={[-1.5, 0, -settings.sizes.compass / 2 - margin]}
+        position={[-textSize / 2, 0, -settings.sizes.compass / 2 - margin]}
       >
         W
         <meshBasicMaterial color={settings.colors.compass.text} />
