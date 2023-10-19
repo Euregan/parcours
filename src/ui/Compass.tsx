@@ -29,6 +29,43 @@ const Compass = () => {
   ];
 
   const margin = 1;
+  const lines = [];
+
+  for (let i = 0; i < 90; i++) {
+    const angle = (i * Math.PI) / 180 + 0.05;
+    let lineColor = settings.colors.compass.line;
+    let lineWidth = 3;
+    let startMargin = 0;
+
+    if (i === 30 || i === 60) {
+      lineColor = settings.colors.compass.specialLine;
+    }
+
+    if (Math.abs(i % 2) === 1) {
+      startMargin = 1.5;
+      lineWidth = 3;
+    }
+
+    // Ajoute une ligne à l'angle actuel
+    const startPoint = new Vector2(
+      Math.cos(angle) * (settings.sizes.compass / 2 + margin + startMargin),
+      Math.sin(angle) * (settings.sizes.compass / 2 + margin + startMargin)
+    );
+    const endPoint = new Vector2(
+      Math.cos(angle) * (settings.sizes.compass / 2 + margin + lineWidth),
+      Math.sin(angle) * (settings.sizes.compass / 2 + margin + lineWidth)
+    );
+
+    lines.push(
+      <Line
+        key={`line-${i}`}
+        points={[startPoint, endPoint]}
+        color={lineColor}
+        lineWidth={lineWidth}
+        rotation={[Math.PI * 0.5, 0, 0]}
+      />
+    );
+  }
 
   return (
     <group position={[0, 0, 0]}>
@@ -44,40 +81,7 @@ const Compass = () => {
         rotation={[Math.PI * 0.5, 0, 0]}
       />
 
-      <Line
-        points={[
-          new Vector2(
-            Math.cos(Math.PI * 0.25) * (settings.sizes.compass / 2 + margin),
-            Math.sin(Math.PI * 0.25) * (settings.sizes.compass / 2 + margin)
-          ),
-          new Vector2(
-            Math.cos(Math.PI * 0.25) *
-              (settings.sizes.compass / 2 + margin + 3),
-            Math.sin(Math.PI * 0.25) * (settings.sizes.compass / 2 + margin + 3)
-          ),
-        ]}
-        // color={settings.colors.compass.line}
-        color="red"
-        lineWidth={1}
-        rotation={[Math.PI * 0.5, 0, 0]}
-      />
-
-      <Line
-        points={[
-          new Vector2(
-            Math.cos(Math.PI * 0.33) * (settings.sizes.compass / 2 + margin),
-            Math.sin(Math.PI * 0.33) * (settings.sizes.compass / 2 + margin)
-          ),
-          new Vector2(
-            Math.cos(Math.PI * 0.33) *
-              (settings.sizes.compass / 2 + margin + 3),
-            Math.sin(Math.PI * 0.33) * (settings.sizes.compass / 2 + margin + 3)
-          ),
-        ]}
-        color="orange"
-        lineWidth={1}
-        rotation={[Math.PI * 0.5, 0, 0]}
-      />
+      {lines}
 
       <Shape
         args={[mask]}
