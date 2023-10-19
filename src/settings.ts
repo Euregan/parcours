@@ -7,6 +7,7 @@ const settings = {
     },
     compass: {
       line: "#8fb1b4",
+      specialLine: "FFC0CB",
       text: "#fcfcfd",
     },
   },
