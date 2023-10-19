@@ -32,7 +32,7 @@ const Compass = () => {
   const lines = [];
 
   for (let i = 0; i < 90; i++) {
-    const angle = (i * Math.PI) / 180 + 0.05;
+    const angle = (i * Math.PI) / 180;
     let lineColor = settings.colors.compass.line;
     let lineWidth = 3;
     let startMargin = 0;
