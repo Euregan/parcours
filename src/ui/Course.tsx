@@ -1,8 +1,9 @@
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { NoToneMapping } from "three";
-import Terrain from "./Terrain";
 import Compass from "./Compass";
+import Terrain from "./Terrain";
+import Marker from "./Marker";
 import settings from "../settings";
 import * as style from "./Course.css";
 
@@ -26,6 +27,19 @@ const Course = ({ heightmap }: CourseProps) => (
 
       <Compass />
       <Terrain heightmap={heightmap} size={size} />
+
+      <Marker
+        position={{ x: 22, y: 2 }}
+        elevation={3.2}
+        color={settings.colors.compass.line}
+        letter="S"
+      />
+      <Marker
+        position={{ x: -24, y: -5 }}
+        elevation={4.9}
+        color="#fc6f50"
+        letter="F"
+      />
     </Canvas>
   </section>
 );

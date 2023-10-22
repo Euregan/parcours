@@ -10,7 +10,7 @@ type TerrainProps = {
 
 type Point = { x: number; y: number; height: number };
 
-const gridSize = 500;
+const gridSize = 50;
 // Dirty hack to make the heightmap fit the Compass
 const scale = 65 / gridSize;
 const levelCount = 30;
